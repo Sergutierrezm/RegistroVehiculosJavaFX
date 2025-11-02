@@ -9,32 +9,26 @@ import java.util.Map;
 
 public class ReporteUtil {
 
-    /**
-     * Genera un PDF a partir del jrxml que esté en resources/reportes/
-     * @param jrxmlResourcePath recurso relativo, p.ej. "/com/example/nf1actividad2/reportes/informeVehiculo.jrxml"
-     * @param outputPdfPath ruta de salida en el filesystem, p.ej. "informeVehiculo.pdf"
-     * @param parametros mapa de parámetros para el informe
-     * @throws JRException si hay problema con Jasper
-     */
+
     public static void generarPdfDesdeJrxml(String jrxmlResourcePath, String outputPdfPath, Map<String, Object> parametros) throws JRException {
-        // Cargamos el jrxml como stream desde resources
+        // Carga el archivo .jrxml desde la carpeta resource
         InputStream jrxmlStream = ReporteUtil.class.getResourceAsStream(jrxmlResourcePath);
         if (jrxmlStream == null) {
             throw new JRException("No se encontró el recurso: " + jrxmlResourcePath);
         }
 
-        // Compilar el JRXML
+        // Compila el archivo .jrxml en un objeto JasperReport
         JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
 
-        // Llenamos con parámetros y datasource mínimo
-        // Collections.singletonList(new Object()) asegura que los parámetros se muestren
+        //Crea un objeto JasperPrint rellenando el informe con los parametros recibidos
+        //Permite generar el informe aunque no haya base de datos asociada
         JasperPrint jasperPrint = JasperFillManager.fillReport(
                 jasperReport,
                 parametros,
                 new JRBeanCollectionDataSource(Collections.singletonList(new Object()))
         );
 
-        // Exportar a PDF
+        // Exporta el informe ya completado a un archivo pdf en la ruta indicada
         JasperExportManager.exportReportToPdfFile(jasperPrint, outputPdfPath);
     }
 }

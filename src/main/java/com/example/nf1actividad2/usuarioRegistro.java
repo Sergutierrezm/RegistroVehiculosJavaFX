@@ -15,6 +15,7 @@ import java.io.IOException;
 
 public class usuarioRegistro {
 
+    //Clase que controla la pantalla de registro de un vehiculo
     @FXML
     private ComboBox<String> comboMarca;
 
@@ -34,11 +35,13 @@ public class usuarioRegistro {
     private Button btnSiguiente;
 
     @FXML
+    //metodo que se ejecuta automaticamente
     public void initialize() {
-        // Añadir marcas al ComboBox
+        // Añadimos las marcas disponibles
         comboMarca.getItems().addAll("Audi", "BMW", "Toyota");
 
-        // Mostrar el año seleccionado en el Slider
+        // Escucha los cambios del slider y actualiza la etiqueta del año seleccionado
+        //Cada vez que cambia el valor del slider, tambien recalcula el valor del coche
         sliderAnio.valueProperty().addListener((obs, oldVal, newVal) -> {
             lblAnioSeleccionado.setText(String.valueOf(newVal.intValue()));
             calcularValor();
@@ -47,7 +50,7 @@ public class usuarioRegistro {
         // Cuando cambia la marca, recalculamos el valor
         comboMarca.setOnAction(e -> calcularValor());
 
-        // Acción del botón Siguiente
+        // Acción del botón Siguiente, llama al metodo irGuardar
         btnSiguiente.setOnAction(e -> {
             try {
                 irAGuardar((ActionEvent) e);
@@ -57,17 +60,18 @@ public class usuarioRegistro {
         });
     }
 
+    //metodo que calcula el valor estimado del vehiculo
     private void calcularValor() {
         String marca = comboMarca.getValue();
         if (marca == null) return;
 
         int anio = (int) sliderAnio.getValue();
         int anioActual = 2025;
-        int antiguedad = anioActual - anio;
+        int antiguedad = anioActual - anio; //se calcula los años de antiguedad
 
         double precioBase;
         double depreciacion;
-
+        //Asginamos el precio base y la depreciacion anual segun la marca que indiquemos
         switch (marca) {
             case "BMW":
                 precioBase = 40000;
@@ -84,19 +88,22 @@ public class usuarioRegistro {
             default:
                 return;
         }
-
+        //calcula el valor final
         double valor = precioBase - (antiguedad * depreciacion);
         if (valor < 0) valor = 0;
 
+        //muestra el valor calculado
         lblValorVehiculo.setText(String.format("%.2f €", valor));
     }
 
     @FXML
+    //metodo que cambia a la pantalla de guardar los datos
     private void irAGuardar(ActionEvent event) throws IOException {
+       // carga el archivo fxml de la siguiente pantalla
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("guardar.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
-        // Pasar los datos al controlador de guardar
+        // envia los datos introducidos por el usuario a la sigueinte ventana
         guardarRegistro controller = fxmlLoader.getController();
         controller.setDatos(
                 txtMatricula.getText(),
@@ -105,7 +112,7 @@ public class usuarioRegistro {
                 lblValorVehiculo.getText()
         );
 
-        // Obtener el Stage actual y cambiar la escena
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();

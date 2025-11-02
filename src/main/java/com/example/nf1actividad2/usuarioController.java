@@ -12,16 +12,18 @@ import java.io.IOException;
 public class usuarioController {
 
     @FXML
+    //Metodo que se ejecuta cuando el usuario pulsa en registrar vehiculo
+
     private void registrarVehiculo(ActionEvent event) {
         try {
             // Cargamos el FXML de la siguiente pantalla
             FXMLLoader loader = new FXMLLoader(getClass().getResource("registro.fxml"));
             Parent root = loader.load();
 
-            // Obtenemos el stage actual
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Cambiamos la escena
+
             stage.setScene(new Scene(root, 600, 400));
             stage.show();
 
@@ -31,8 +33,9 @@ public class usuarioController {
     }
 
     @FXML
+    //Metodo que se ejecuta cuando el usuario pulsa en salir
     private void salir(ActionEvent event) {
-        // Cerramos la aplicación
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
